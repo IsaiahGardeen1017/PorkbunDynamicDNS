@@ -16,7 +16,7 @@ async function main() {
     return;
   }
 
-  if (PORKBUN_API_KEY || PORKBUN_SECRET_KEY) {
+  if (!PORKBUN_API_KEY || !PORKBUN_SECRET_KEY) {
     console.log(
       `Missing PORKBUN_API_KEY and/or PORKBUN_SECRET_KEY envniromnet variables`,
     );
