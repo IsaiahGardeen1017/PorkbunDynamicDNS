@@ -4,12 +4,15 @@ const PORKBUN_HOSTNAME = "https://api.porkbun.com";
 const PORKBUN_API_KEY = Deno.env.get("PORKBUN_API_KEY");
 const PORKBUN_SECRET_KEY = Deno.env.get("PORKBUN_SECRET_KEY");
 
+const HELP_TEXT =
+  "Requires 1 argument domain, can optionally provide 2nd argument ip";
+
 main();
 
 async function main() {
   const domain = Deno.args[0];
   if (!domain) {
-    console.log("host required");
+    console.log(HELP_TEXT);
     return;
   }
 
