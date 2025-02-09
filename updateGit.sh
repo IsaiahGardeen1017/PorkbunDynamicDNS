@@ -24,7 +24,9 @@ if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/$BRANCH_NAME)" ]; then
 
     # Run the build command
     echo "Running build command: $BUILD_COMMAND"
-    eval "$BUILD_COMMAND"
+    pwd
+    eval cd "$REPO_DIR" && "$BUILD_COMMAND"
+    pwd
 else
     echo "No changes detected."
 fi
