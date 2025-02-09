@@ -6,19 +6,21 @@ const PORKBUN_SECRET_KEY = Deno.env.get("PORKBUN_SECRET_KEY");
 
 const HELP_TEXT =
   "Requires 1 argument domain, can optionally provide 2nd argument ip";
+const applicationName = "porkbundyndns";
 
 main();
 
 async function main() {
+  log(`Starting ${applicationName}`);
   const domain = Deno.args[0];
   if (!domain) {
-    console.log(HELP_TEXT);
+    log(HELP_TEXT);
     return;
   }
 
   if (!PORKBUN_API_KEY || !PORKBUN_SECRET_KEY) {
-    console.log(
-      `Missing PORKBUN_API_KEY and/or PORKBUN_SECRET_KEY envniromnet variables`,
+    log(
+      `Missing at least one environment variable: PORKBUN_API_KEY PORKBUN_SECRET_KEY`,
     );
     return;
   }
@@ -31,7 +33,7 @@ async function main() {
     if (currentIp !== targetIp) {
       editDNSRecord(domain, targetIp);
     } else {
-      console.log(`A record for ${domain} is already ${targetIp}`);
+      log(`'A' record for ${domain} is already ${targetIp}, no changes needed`);
     }
   }
 }
@@ -56,8 +58,10 @@ async function pingPorkbun(): Promise<string | undefined> {
       return undefined;
     }
   } catch (err) {
-    console.log(
-      `Could not ping ${PORKBUN_HOSTNAME}, likely due to missing environment variables`,
+    log(
+      `Could not ping ${PORKBUN_HOSTNAME},  || ${request.status}: ${
+        (await request.json()).message
+      }`,
     );
     return undefined;
   }
@@ -76,7 +80,7 @@ async function getCurrentSetIp(fullDomain: string): Promise<string> {
   };
   const request = await fetch(url, requestOptions);
   if (request.status !== 200) {
-    console.log(
+    log(
       `Could not get DNS records || ${request.status}: ${
         (await request.json()).message
       }`,
@@ -107,14 +111,14 @@ async function editDNSRecord(fullDomain: string, ip: string) {
   };
   const request = await fetch(url, requestOptions);
   if (request.status !== 200) {
-    console.log(
+    log(
       `Could not set DNS || ${request.status}: ${
         (await request.json()).message
       }`,
     );
     return;
   }
-  console.log(
+  log(
     `${
       subDomain ? subDomain + "." : ""
     }${domain} A record succesfully set to ${ip}`,
@@ -127,4 +131,11 @@ function seperateDomain(domain: string) {
     domain: parts.splice(parts.length - 2).join("."),
     subDomain: parts.join("."),
   };
+}
+
+function log(str: string) {
+  const lines = str.split("\n");
+  for (const line of lines) {
+    console.log(`${Date.now()} ${applicationName}]| ${line}`);
+  }
 }
