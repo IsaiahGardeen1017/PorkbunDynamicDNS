@@ -76,14 +76,18 @@ async function getCurrentSetIp(fullDomain: string): Promise<string> {
   };
   const request = await fetch(url, requestOptions);
   if (request.status !== 200) {
-    console.log(`Could not get DNS records`);
+    console.log(
+      `Could not get DNS records || ${request.status}: ${
+        (await request.json()).message
+      }`,
+    );
     return "";
   }
   const responseBody = await request.json();
   if (responseBody.records.length > 1) {
     return "";
   } else {
-    return responseBody.records[0].content;
+    return responseBody.records[0]?.content;
   }
 }
 
@@ -103,7 +107,11 @@ async function editDNSRecord(fullDomain: string, ip: string) {
   };
   const request = await fetch(url, requestOptions);
   if (request.status !== 200) {
-    console.log(`Could not set DNS: ${request.statusText}`);
+    console.log(
+      `Could not set DNS || ${request.status}: ${
+        (await request.json()).message
+      }`,
+    );
     return;
   }
   console.log(
