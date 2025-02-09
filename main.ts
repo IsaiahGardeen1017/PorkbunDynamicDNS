@@ -33,7 +33,7 @@ async function main() {
     if (currentIp !== targetIp) {
       editDNSRecord(domain, targetIp);
     } else {
-      // log(`'A' record for ${domain} is already ${targetIp}, no changes needed`);
+      log(`'A' record for ${domain} is already ${targetIp}, no changes needed`);
     }
   }
 }
