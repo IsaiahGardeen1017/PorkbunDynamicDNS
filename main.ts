@@ -11,7 +11,6 @@ const applicationName = "porkbundyndns";
 main();
 
 async function main() {
-  log(`Starting ${applicationName}`);
   const domain = Deno.args[0];
   if (!domain) {
     log(HELP_TEXT);
